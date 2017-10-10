@@ -25,11 +25,9 @@ def init():
     from datetime import datetime
     from flask import Flask
     from flask_bootstrap import Bootstrap
-    from flask_misaka import Misaka
     from flask_nav import Nav, register_renderer
-    from misaka import HTML_ESCAPE
     from pathlib import PurePosixPath
-    from .bootstrap import top_nav, CustomBootstrapRenderer, CustomMisakaRenderer
+    from .bootstrap import top_nav, CustomBootstrapRenderer
     from .config import PORTAL_NON_ROOT, SECRET_KEY, DEBUG, LAB_NAME, MAX_UPLOAD_SIZE, YANDEX_METRIKA
     from .views import view_bp
 
@@ -47,9 +45,6 @@ def init():
     nav = Nav(app)
     nav.register_element('top_nav', top_nav)
     Bootstrap(app)
-
-    Misaka(app, renderer=CustomMisakaRenderer(flags=0 | HTML_ESCAPE), tables=True,
-           underline=True, math=True, strikethrough=True, superscript=True, footnotes=True, smartypants=False)
 
     app_url = PurePosixPath('/') / (PORTAL_NON_ROOT or '')
     app.register_blueprint(view_bp, url_prefix=app_url.as_posix() if PORTAL_NON_ROOT else None)

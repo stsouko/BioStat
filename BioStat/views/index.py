@@ -21,7 +21,6 @@
 #
 from flask import redirect, url_for, render_template, make_response
 from flask.views import View
-from io import StringIO
 from pandas import read_csv
 from ..config import LAB_NAME
 from ..constants import FormRoute

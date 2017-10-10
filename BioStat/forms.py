@@ -23,8 +23,7 @@ from collections import OrderedDict
 from flask import url_for, redirect
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
-from wtforms import (StringField, validators, BooleanField, SubmitField, PasswordField, ValidationError,
-                     TextAreaField, SelectField, HiddenField, IntegerField, DateTimeField, SelectMultipleField)
+from wtforms import validators, SubmitField, HiddenField
 from .redirect import get_redirect_target, is_safe_url
 
 

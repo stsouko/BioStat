@@ -23,13 +23,7 @@ from dominate import tags
 from flask_bootstrap.nav import BootstrapRenderer
 from flask_nav.elements import View, NavigationItem, Navbar
 from hashlib import sha1
-from misaka import HtmlRenderer
 from .config import LAB_SHORT
-
-
-class CustomMisakaRenderer(HtmlRenderer):
-    def table(self, content):
-        return '<table class="table">{}</table>'.format(content)
 
 
 class LeftSubgroup(NavigationItem):
