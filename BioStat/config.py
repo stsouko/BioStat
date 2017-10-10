@@ -26,6 +26,7 @@ from traceback import format_exc
 
 
 UPLOAD_PATH = 'upload'
+RESULTS_PATH = 'results'
 MAX_UPLOAD_SIZE = 16 * 1024 * 1024
 PORTAL_NON_ROOT = None
 SECRET_KEY = 'development key'
@@ -35,17 +36,9 @@ DEBUG = False
 LAB_NAME = 'BioStat Data Analysis'
 LAB_SHORT = 'BioStat'
 
-REDIS_HOST = 'localhost'
-REDIS_PORT = 6379
-REDIS_PASSWORD = None
-REDIS_TTL = 86400
-REDIS_JOB_TIMEOUT = 3600
-REDIS_MAIL = 'mail'
-REDIS_SCOPUS = 'scopus'
 
 config_list = ('UPLOAD_PATH', 'PORTAL_NON_ROOT', 'SECRET_KEY', 'MAX_UPLOAD_SIZE', 'YANDEX_METRIKA',
-               'REDIS_HOST', 'REDIS_PORT', 'REDIS_PASSWORD', 'REDIS_TTL', 'REDIS_JOB_TIMEOUT', 'REDIS_MAIL',
-               'LAB_NAME', 'LAB_SHORT')
+               'LAB_NAME', 'LAB_SHORT', 'RESULTS_PATH')
 
 config_load_list = ['DEBUG']
 config_load_list.extend(config_list)
@@ -70,3 +63,4 @@ with next(x for x in config_dirs if x.exists()).open() as f:
             print('line %d\n\n%s\n consist errors: %s' % (n, line, format_exc()), file=stderr)
 
 UPLOAD_ROOT = Path(UPLOAD_PATH)
+RESULTS_ROOT = Path(RESULTS_PATH)

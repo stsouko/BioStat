@@ -20,7 +20,10 @@
 #  MA 02110-1301, USA.
 #
 from flask import Blueprint
+from .download import DownloadView
 from .index import IndexView
+from .prepare import PrepareView
+
 
 view_bp = Blueprint('view', __name__)
 
@@ -28,5 +31,6 @@ view_bp = Blueprint('view', __name__)
 index_view = IndexView.as_view('index')
 view_bp.add_url_rule('/', view_func=index_view)
 view_bp.add_url_rule('/index', view_func=index_view)
-view_bp.add_url_rule('/<int:action>', view_func=index_view)
-view_bp.add_url_rule('/index/<int:action>', view_func=index_view)
+
+view_bp.add_url_rule('/prepare/<string:data>', view_func=PrepareView.as_view('prepare'))
+view_bp.add_url_rule('/download/<string:data>', view_func=DownloadView.as_view('download'))

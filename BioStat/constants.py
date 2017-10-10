@@ -19,14 +19,3 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 #
-from enum import Enum
-
-
-class FormRoute(Enum):
-    WILCOXON = 1
-
-    @staticmethod
-    def get(action):
-        if action == 1:
-            return FormRoute(action)
-        return None

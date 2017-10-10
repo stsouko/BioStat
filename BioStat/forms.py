@@ -23,7 +23,8 @@ from collections import OrderedDict
 from flask import url_for, redirect
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
-from wtforms import validators, SubmitField, HiddenField
+from wtforms import SubmitField, HiddenField, BooleanField, SelectField, SelectMultipleField, StringField
+from wtforms.validators import DataRequired
 from .redirect import get_redirect_target, is_safe_url
 
 
@@ -53,5 +54,28 @@ class CustomForm(FlaskForm):
 
 
 class Upload(CustomForm):
-    data = FileField('Data', validators=[validators.DataRequired(), FileAllowed('csv '.split(), 'Table data only')])
+    sep = StringField('Separator', default=';', validators=[DataRequired()])
+    nan = StringField('NaN keys')
+    data = FileField('Data', validators=[DataRequired(), FileAllowed('csv '.split(), 'Table data only')])
     submit_btn = SubmitField('Upload')
+
+    @property
+    def nan_list(self):
+        if self.nan.data:
+            return self.nan.data.split(self.sep.data)
+        return []
+
+
+class Prepare(CustomForm):
+    group = SelectMultipleField('Group', validators=[DataRequired()])
+    data = SelectField('Data', validators=[DataRequired()])
+    submit_btn = SubmitField('Prepare')
+
+    def __init__(self, columns, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.data.choices = self.group.choices = [(x, x) for x in columns]
+
+
+class Download(CustomForm):
+    delete = BooleanField('Delete data?')
+    submit_btn = SubmitField('Download')
