@@ -39,7 +39,8 @@ class IndexView(View):
         if active_form.validate_on_submit():
             file_name = str(uuid4())
             sep = active_form.sep.data
-            data = read_csv(active_form.data.data.stream, sep=sep, na_values=active_form.nan_list)
+            data = read_csv(active_form.data.data.stream, sep=sep, na_values=active_form.nan_list,
+                            decimal=active_form.decimal.data)
             data.to_csv((UPLOAD_ROOT / file_name).as_posix(), index=False)
             return redirect(url_for('.prepare', data=file_name))
 

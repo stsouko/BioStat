@@ -55,7 +55,8 @@ class CustomForm(FlaskForm):
 
 class Upload(CustomForm):
     sep = StringField('Separator', default=';', validators=[DataRequired()])
-    nan = StringField('NaN keys')
+    nan = StringField('NaN keys', default='n/a')
+    decimal = StringField('Decimal', default=',', validators=[DataRequired()])
     data = FileField('Data', validators=[DataRequired(), FileAllowed('csv '.split(), 'Table data only')])
     submit_btn = SubmitField('Upload')
 
@@ -67,13 +68,14 @@ class Upload(CustomForm):
 
 
 class Prepare(CustomForm):
+    date = SelectField('Date', validators=[DataRequired()])
     group = SelectMultipleField('Group', validators=[DataRequired()])
-    data = SelectField('Data', validators=[DataRequired()])
+    data = SelectMultipleField('Data', validators=[DataRequired()])
     submit_btn = SubmitField('Prepare')
 
     def __init__(self, columns, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.data.choices = self.group.choices = [(x, x) for x in columns]
+        self.date.choices = self.data.choices = self.group.choices = [(x, x) for x in columns]
 
 
 class Download(CustomForm):
