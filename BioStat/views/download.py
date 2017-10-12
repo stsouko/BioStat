@@ -41,9 +41,9 @@ class DownloadView(View):
 
         active_form = Download()
         if active_form.validate_on_submit():
-            resp = make_response(data_path.open().read())
-            resp.headers['Content-Disposition'] = 'attachment; filename=result.csv'
-            resp.headers['Content-Type'] = 'text/csv'
+            resp = make_response(data_path.open('rb').read())
+            resp.headers['Content-Disposition'] = 'attachment; filename=result.xlsx'
+            resp.headers['Content-Type'] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 
             if active_form.delete.data:
                 data_path.unlink()

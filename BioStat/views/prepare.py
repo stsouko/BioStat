@@ -22,7 +22,7 @@
 from collections import defaultdict
 from flask import url_for, render_template, redirect
 from flask.views import View
-from itertools import combinations
+from itertools import combinations, chain
 from pandas import read_csv, DataFrame, MultiIndex, merge, concat
 from scipy.stats import wilcoxon, mannwhitneyu
 from statsmodels.sandbox.stats.multicomp import multipletests
@@ -126,8 +126,14 @@ class PrepareView(View):
             paired_mms = DataFrame(paired_mms.to_dict())
             unpaired_mms = DataFrame(unpaired_mms.to_dict())
 
-            with (RESULTS_ROOT / data).open('w') as f:
-                concat([paired_mms, unpaired_mms]).to_csv(f)
+            result = concat([paired_mms, unpaired_mms])
+            result.index = range(len(result.index))
+            result = result[list(chain((('%s_%d' % (y, x), '') for x in (1, 2) for y in gi),
+                                       ((x, y) for x in data_fields for y in
+                                        chain(('%s_%d' % (y, x) for x in (1, 2) for y in ('median', 'mean', 'std')),
+                                              ('p-value', 'p-value_adj', 'significance')))))]
+
+            result.to_excel((RESULTS_ROOT / data).as_posix(), engine='openpyxl')
 
             return redirect(url_for('.download', data=data))
 
