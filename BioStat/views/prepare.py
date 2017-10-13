@@ -20,10 +20,11 @@
 #  MA 02110-1301, USA.
 #
 from collections import defaultdict
-from flask import url_for, render_template, redirect
+from flask import url_for, render_template, redirect, flash
 from flask.views import View
 from itertools import combinations, chain
 from pandas import read_csv, DataFrame, MultiIndex, merge, concat
+from pandas.api.types import is_numeric_dtype
 from scipy.stats import wilcoxon, mannwhitneyu
 from statsmodels.sandbox.stats.multicomp import multipletests
 from werkzeug.utils import secure_filename
@@ -57,6 +58,11 @@ class PrepareView(View):
             rgi_2 = [('', '%s_2' % x) for x in gi]
 
             df = read_csv(data_path.as_posix(), usecols=gi + data_fields)
+            if not all(is_numeric_dtype(df[x]) for x in data_fields):
+                data_path.unlink()
+                flash('Data fields not numeric. file removed. try again with correct(ed) file or choose correct fields')
+                return redirect(url_for('.index'))
+
             mms = df.groupby(gi).agg(['mean', 'median', 'std']).reset_index()
             mms.columns = mms.columns.swaplevel()
 
@@ -79,7 +85,7 @@ class PrepareView(View):
                         for f in data_fields:
                             vxf, vyf = dv[x][f], dv[y][f]
                             loc = ~(vxf.isnull().as_matrix() | vyf.isnull().as_matrix())
-                            if loc.mean() > .0001:
+                            if loc.sum() > 0:
                                 _, p_value = wilcoxon(vxf.loc[loc], vyf.loc[loc], zero_method='wilcox', correction=True)
                                 tmp1[f] = p_value
                             else:

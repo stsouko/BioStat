@@ -19,7 +19,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 #
-from flask import redirect, url_for, render_template
+from flask import redirect, url_for, render_template, flash
 from flask.views import View
 from pandas import read_csv
 from uuid import uuid4
@@ -27,7 +27,7 @@ from ..config import LAB_NAME, UPLOAD_ROOT
 from ..forms import Upload
 
 
-class IndexView(View):
+class UploadView(View):
     methods = ['GET', 'POST']
 
     def dispatch_request(self):
@@ -39,9 +39,12 @@ class IndexView(View):
         if active_form.validate_on_submit():
             file_name = str(uuid4())
             sep = active_form.sep.data
-            data = read_csv(active_form.data.data.stream, sep=sep, na_values=active_form.nan_list,
-                            decimal=active_form.decimal.data)
-            data.to_csv((UPLOAD_ROOT / file_name).as_posix(), index=False)
-            return redirect(url_for('.prepare', data=file_name))
+            try:
+                data = read_csv(active_form.data.data.stream, sep=sep, na_values=active_form.nan_list,
+                                decimal=active_form.decimal.data)
+                data.to_csv((UPLOAD_ROOT / file_name).as_posix(), index=False)
+                return redirect(url_for('.prepare', data=file_name))
+            except:
+                flash('Data file is invalid')
 
         return render_template('forms.html', title=LAB_NAME, tabs=tabs, form=active_form, message='Data Upload')

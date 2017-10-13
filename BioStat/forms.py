@@ -79,5 +79,5 @@ class Prepare(CustomForm):
 
 
 class Download(CustomForm):
-    delete = BooleanField('Delete data?')
+    delete = BooleanField('Delete data?', default=True)
     submit_btn = SubmitField('Download')
